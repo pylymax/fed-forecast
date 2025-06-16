@@ -1,0 +1,45 @@
+name: Update Fed Forecast
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Every day at 6am UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install axios
+
+      - name: Fetch Fed Forecast
+        run: |
+          echo "const axios = require('axios'); const fs = require('fs');" > fetch.js
+          echo "axios.get('https://query1.finance.yahoo.com/v8/finance/chart/ZQ=F?interval=1d')" >> fetch.js
+          echo ".then(r => {" >> fetch.js
+          echo "  const p = r.data.chart.result[0].indicators.adjclose[0].adjclose;" >> fetch.js
+          echo "  const rate = +(100 - p[p.length - 1]).toFixed(2);" >> fetch.js
+          echo "  fs.writeFileSync('fed_forecast.json', JSON.stringify([{" >> fetch.js
+          echo "    label: 'Implied Rate (Front Month)'," >> fetch.js
+          echo "    date: new Date().toISOString().split('T')[0]," >> fetch.js
+          echo "    rate" >> fetch.js
+          echo "  }], null, 2));" >> fetch.js
+          echo "})" >> fetch.js
+          echo ".catch(e => console.error(e));" >> fetch.js
+          node fetch.js
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add fed_forecast.json
+          git commit -m "Auto-update forecast"
+          git push

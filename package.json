@@ -1,0 +1,23 @@
+{
+  "name": "fed-forecast",
+  "version": "1.0.0",
+  "main": "fetch-fed-futures.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pylymax/fed-forecast.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pylymax/fed-forecast/issues"
+  },
+  "homepage": "https://github.com/pylymax/fed-forecast#readme",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.10.0"
+  }
+}
